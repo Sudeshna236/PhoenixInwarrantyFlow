@@ -49,6 +49,14 @@ jobs:
       with:
         Server_Address: smtp.gmail.com
         Server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: PhoenicInwarrantyFlow execution
+        to: sudeshna.saroja@gmail.com
+        from: ${{ secrets.EMAIL_USERNAME }}
+        body: |
+              Hi, PhoenixInwarranty Flow test has been executed.The report has been published and the URL 
+              is https://sudeshna236.github.io/PhoenixInwarrantyFlow/
       
     
         
