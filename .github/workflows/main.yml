@@ -3,10 +3,10 @@ on:
   push:
     branches: [main]
   workflow_dispatch:   
-  schedule:
-    - cron : 30 07 * * * # 7.30 am Dublin time
-    - cron : 30 07 * * * # 7.30 pm Dublin time
-    - cron : 30 11 * * 1-5 # 11.30 am Dublin time monday to friday
+  #schedule:
+  #  - cron : 30 07 * * * # 7.30 am Dublin time
+  #  - cron : 30 07 * * * # 7.30 pm Dublin time
+  #  - cron : 30 11 * * 1-5 # 11.30 am Dublin time monday to friday
    
 jobs:
   run-postman-tests:
