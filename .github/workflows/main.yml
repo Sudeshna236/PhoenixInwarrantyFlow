@@ -1,0 +1,62 @@
+name : Postman Collection Workflow
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:   
+  #schedule:
+  #  - cron : 30 07 * * * # 7.30 am Dublin time
+  #  - cron : 30 07 * * * # 7.30 pm Dublin time
+  #  - cron : 30 11 * * 1-5 # 11.30 am Dublin time monday to friday
+   
+jobs:
+  run-postman-tests:
+    runs-on: ubuntu-latest
+    steps: 
+    - name: Checkout the code
+      uses: actions/checkout@v4.2.2
+    - name: Install Node js and npm
+      uses: actions/setup-node@v6.0.0
+      with:
+        node-version: "22"
+    - name: Install newman and  html reporter globally
+      run: 
+         |
+         npm install -g newman 
+         npm install -g newman-reporter-htmlextra
+    - name: run the postman collection with newman
+      run:
+         |
+         newman run InwarrantyFlowCollection.postman_collection.json \
+         -e QA.postman_environment.json \
+         -d testdata.csv \
+         -r cli,htmlextra \
+         --reporter-htmlextra-export ./newman/index.html
+    - name: Newman report
+      if:  always()
+      uses: actions/upload-artifact@v5.0.0
+      with: 
+        name: Newman_Report
+        path: newman/*.html
+    - name: creating github page branch
+      if : always()
+      uses : peaceiris/actions-gh-pages@v4.0.0
+      with: 
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: newman/
+    - name: Send email notification
+      if:  always()
+      uses: dawidd6/action-send-mail@v6
+      with:
+        Server_Address: smtp.gmail.com
+        Server_port: 465
+        username: ${{ secrets.EMAIL_USERNAME }}
+        password: ${{ secrets.EMAIL_PASSWORD }}
+        subject: PhoenicInwarrantyFlow execution
+        to: sudeshna.saroja@gmail.com
+        from: ${{ secrets.EMAIL_USERNAME }}
+        body: |
+              Hi, PhoenixInwarranty Flow test has been executed.The report has been published and the URL 
+              is https://sudeshna236.github.io/PhoenixInwarrantyFlow/
+      
+    
+        
